@@ -8,13 +8,16 @@ class Graph extends Component {
         const padding = 100
         const width = graphSVG.node().parentNode.clientWidth
         graphSVG.attr("width", width).attr("height", width)
+        graphSVG.select(".nodes").remove()
+        graphSVG.select(".links").remove()
+
         const simulation = d3
             .forceSimulation()
             .force(
                 "link",
                 d3.forceLink().id(function(d) {
                     return d.id
-                })
+                }).distance(30)
             )
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(width / 2, width / 2))
@@ -23,13 +26,23 @@ class Graph extends Component {
         console.log(graph)
         simulation.force("link").links(graph.links)
         const link = graphSVG
+
             .append("g")
             .attr("class", "links")
             .selectAll("line")
             .data(graph.links)
             .enter()
             .append("line")
-            .attr("stroke", "#d9dde2")
+            .attr("stroke", "#0099ff")
+            .attr("stroke-linecap", "round")
+            .attr("opacity", function(d, i){
+                var delta = 100;
+                return (i / delta) + 0.2;
+            })
+            .attr("stroke-width", function(d, i){
+                return Math.sqrt(graph.links[i].weight) + 1;
+             })
+
         const node = graphSVG
             .append("g")
             .attr("class", "nodes")
@@ -37,7 +50,8 @@ class Graph extends Component {
             .data(graph.nodes)
             .enter()
             .append("circle")
-            .attr("r", 5)
+            .attr("r", 3)
+            
         function ticked() {
             let max = {}
             let min = {}

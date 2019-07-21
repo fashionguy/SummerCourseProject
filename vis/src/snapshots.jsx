@@ -1,12 +1,16 @@
 import React, { Component } from "react"
 import * as d3 from "d3"
+import App from './App';
+
 
 class Snapshots extends Component {
     constructor(props) {
         super(props)
     }
 
+
     componentWillReceiveProps(props) {
+
         const snapshots = props.snapshots
         const snapshotSVG = d3.select("#snapshot")
         const padding = 100
@@ -59,10 +63,17 @@ class Snapshots extends Component {
             .attr("r", 5)
             .attr("fill", "#a7cda9")
             .attr("stroke", "#d9dde2")
-            .on("mouseover", (d, i) => {
-                console.log(d, i)
+            .attr("value", function(d, i){
+                return i;
             })
+            .on("click", function(d, i){
+                props.changeIndex(i);  
+            })
+            // .on("mouseover", (d, i) => {
+            //     console.log(d, i)
+            // })
     }
+
     render() {
         return <svg id="snapshot" />
     }
